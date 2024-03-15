@@ -1,0 +1,2170 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "2.0.1",
+    "title": "Tasckpro API docs"
+  },
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
+  "servers": [
+    { "url": "http://localhost:3001/api" },
+    { "url": "https://project-team-6-backend.onrender.com/api" }
+  ],
+  "tags": [
+    {
+      "name": "Auth and users",
+      "description": "Authorization/User endpoints"
+    },
+    {
+      "name": "Help",
+      "description": "Help endpoints"
+    },
+    {
+      "name": "Boards",
+      "description": "Boards endpoints"
+    },
+    {
+      "name": "Columns",
+      "description": "Columns endpoints"
+    },
+    {
+      "name": "Tasks",
+      "description": "Tasks endpoints"
+    }
+  ],
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": ["Auth and users"],
+        "summary": "User registration",
+        "parameters": [],
+        "requestBody": {
+          "description": "# Body description queries:\n\n**name** - string, user name.\n\n**email** - string, mail address. \n\n**password** - string, user password. \n",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "**New User Registered** \n\n Request body description : \n\n**user** - object, User information. \n\n **code** - status code \n\n **message** - status message\n\n ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (user with stated email is already exist)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse409"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Auth and users"],
+        "summary": "User login",
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "**Successful operation**\n\nResponce body description:\n\n**code** - status code\n\n**message** - status message.\n\n**token** - string, unique token\n\n**user** - object, Consist: name, email, theme, avatarURL.\n\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (missing field)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (login information is wrong)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": ["Auth and users"],
+        "summary": "User logout",
+        "parameters": [],
+        "description": "**Log out**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseLogout204"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (login information is wrong)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": ["Auth and users"],
+        "summary": "Refresh user",
+        "parameters": [],
+        "description": "**Refresh user**",
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestID"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (login information is wrong)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/themes": {
+      "patch": {
+        "tags": ["Auth and users"],
+        "summary": "",
+        "parameters": [],
+        "description": "**Changing user's theme**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "New Theme",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThemeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateThemeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (missing field/ invalid theme value)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (login information is wrong)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/help": {
+      "post": {
+        "tags": ["Help"],
+        "summary": "Send help mail",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Help mail body",
+          "required": true,
+
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HelpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelpResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (missing field/ invalid theme value)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (login information is wrong)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "patch": {
+        "tags": ["Auth and users"],
+        "summary": "Update current user info",
+        "parameters": [],
+        "description": "**Authorization token must be included**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "New avatar or or new password, email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/boards/{id}": {
+      "get": {
+        "tags": ["Boards"],
+        "summary": "Get board's info by board's ID",
+        "description": "**Board**",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Board`s ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Board id",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetBoardIdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBoardIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Boards"],
+        "summary": "Edit board's info by board's ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Board`s ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Board object",
+          "required": true,
+
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditBoardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditBoardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid board`s ID/ missing required field)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPatchDeleteResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (board already exist)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddBoardResponse409"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Boards"],
+        "summary": "Delete board by board's ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Board`s ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteBoardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid board`s ID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPatchDeleteResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/boards": {
+      "post": {
+        "tags": ["Boards"],
+        "summary": "Add board",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Board object",
+          "required": true,
+
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddBoardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddBoardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (missing required field)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (user with stated email is already exist)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddBoardResponse409"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/columns": {
+      "post": {
+        "tags": ["Columns"],
+        "summary": "Column id",
+        "parameters": [],
+        "description": "**Columns**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Columns id",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewColumnRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewColumnResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (missing required field)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (board already exist)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddColumnResponse409"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error (invalid board's ID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddColumnResponse500"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/columns/{id}/": {
+      "patch": {
+        "tags": ["Columns"],
+        "summary": "Column id",
+        "parameters": [],
+        "description": "**Columns**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Columns id",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateColumnRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateColumnResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid column`s ID/ missing required field)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPatchDeleteResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict (column with stated title is already exist)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddColumnResponse409"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error (invalid board's ID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddColumnResponse500"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Columns"],
+        "summary": "Column id",
+        "parameters": [],
+        "description": "**Columns**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Columns id",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteColumnRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteColumnResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid columns`s ID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPatchDeleteResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Add task",
+        "parameters": [],
+        "description": "**Task**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Task id",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete task by ID",
+        "parameters": [],
+        "description": "**Tasks**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Task id",
+          "required": true,
+          "content": {
+            "application/json":{
+              "schema": {
+                "$ref": "#/components/schemas/DeleteTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "Update task by ID",
+        "parameters": [],
+        "description": "**Tasks**",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Columns id",
+          "required": true,
+          "content": {
+            "application/json":{
+              "schema": {
+                "$ref":"#/components/schemas/PatchTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatchTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/replace": {
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Replace task to another column by task's ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Task`s ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Task object",
+          "required": true,
+
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid task`s ID/ missing required field)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPatchDeleteResponse400"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response401"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found (requested resource could not be found)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response404"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error (invalid column's ID)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplaceTaskResponse500"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John Wick"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "example": "johnWick@gmail.com",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "babaYaga"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "John Wick"
+              },
+              "email": {
+                "type": "string",
+                "example": "johnWick@gmail.com"
+              },
+              "avatarURL": {
+                "type": "string",
+                "example": ""
+              },
+              "boards": {
+                "type": "string",
+                "example": "7 boards"
+              },
+              "theme": {
+                "type": "string",
+                "example": "dark"
+              }
+            }
+          },
+          "code": {
+            "type": "http",
+            "example": "201"
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "example": "johnWick@gmail.com",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "babaYaga"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http"
+          },
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string",
+            "description": "User's token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OTVkNjJlNjE4MzgwMzY4NTk0NDZjNCIsImlhdCI6MTY4NzYxMjMzMCwiZXhwIjoxNjg3Njk4NzMwfQ.Exk_soSUARn-t-7FDQKsiFBTutt_vc9ok9UPuTdGqBU"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "example": "example@gmail.com",
+                "format": "email"
+              },
+              "theme": {
+                "type": "string",
+                "description": "User's theme",
+                "example": "dark"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "User's avatar",
+                "example": "https://cloudinary.com/avatar.jpeg"
+              }
+            }
+          }
+        }
+      },
+      "RequestID": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "Serhii Shevchenko"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "sergeysheva@mail.com"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Logo user",
+            "example": ""
+          },
+          "boards": {
+            "type": "string",
+            "description": "Boards user",
+            "example": "7 boards"
+          },
+          "theme": {
+            "type": "string",
+            "description": "Theme user",
+            "example": "dark"
+          },
+          "id": {
+            "type": "string",
+            "example": "b46gf4b68n4"
+          }
+        }
+      },
+      "RefreshUserResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "Serhii Shevchenko"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "sergeysheva@mail.com"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "Logo user",
+            "example": ""
+          },
+          "boards": {
+            "type": "string",
+            "description": "Boards user",
+            "example": "7 boards"
+          },
+          "theme": {
+            "type": "string",
+            "description": "Theme user",
+            "example": "dark"
+          }
+            }
+          }
+        }
+      },
+      "ThemeRequest": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "theme",
+            "example": "violet"
+          }
+        }
+      },
+      "HelpRequest": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Issue",
+            "example": "theme is not working"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email",
+            "example": "johnWick@gmail.com"
+          }
+        }
+      },
+      "HelpResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Send Email",
+            "example": "johnWick@gmail.com"
+          }
+        }
+      },
+      "CurrentRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http"
+          },
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string",
+            "description": "User's token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OTVkNjJlNjE4MzgwMzY4NTk0NDZjNCIsImlhdCI6MTY4NzYxMjMzMCwiZXhwIjoxNjg3Njk4NzMwfQ.Exk_soSUARn-t-7FDQKsiFBTutt_vc9ok9UPuTdGqBU"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "example": "example@gmail.com",
+                "format": "email"
+              },
+              "theme": {
+                "type": "string",
+                "description": "User's theme",
+                "example": "dark"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "User's avatar",
+                "example": "https://cloudinary.com/avatar.jpeg"
+              }
+            }
+          }
+        }
+      },
+      "CurrentResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http"
+          },
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string",
+            "description": "User's token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0OTVkNjJlNjE4MzgwMzY4NTk0NDZjNCIsImlhdCI6MTY4NzYxMjMzMCwiZXhwIjoxNjg3Njk4NzMwfQ.Exk_soSUARn-t-7FDQKsiFBTutt_vc9ok9UPuTdGqBU"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "example": "example@gmail.com",
+                "format": "email"
+              },
+              "theme": {
+                "type": "string",
+                "description": "User's theme",
+                "example": "dark"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "User's avatar",
+                "example": "https://cloudinary.com/avatar.jpeg"
+              }
+            }
+          }
+        }
+      },
+      "UserUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "New name",
+            "example": "John Wick"
+          },
+          "email": {
+            "type": "string",
+            "description": "New email",
+            "example": "johnWick@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "New password",
+            "example": "123456"
+          }
+        }
+      },
+      "UpdateUserResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Updated user",
+            "example": "Update success"
+          },
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "New name",
+              "example": "John Wick"
+            },
+            "email": {
+              "type": "string",
+              "description": "New email",
+              "example": "johnWick@gmail.com"
+            },
+            "theme": {
+              "type": "string",
+              "description": "theme",
+              "example": "violet"
+            },
+            "avatarURL": {
+              "type": "string",
+              "description": "New avatar",
+              "example": ""
+            }
+          }
+        }
+      },
+      "GetBoardIdRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User id",
+            "example": "64cb8603ccecc89b385e073f"
+          }
+        }
+      },
+      "GetBoardIdResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http",
+            "description": "Code",
+            "example": "200"
+          },
+          "message": {
+            "type": "string",
+            "description": "Response message",
+            "example": "Success"
+          },
+          "boardId": {
+            "type": "string",
+            "description": "Board id",
+            "example": "64cb8603ccecc89b385e073f"
+          },
+          "columns": {
+            "type": "string",
+            "description": "Number columns",
+            "example": "5 columns"
+          },
+          "cards": {
+            "type": "string",
+            "description": "cards id",
+            "example": "64cb8603ccecc89b385e073f"
+          },
+          "icon": {
+            "type": "string",
+            "example": ""
+          },
+          "background": {
+            "type": "string",
+            "example": "dark"
+          }
+        }
+      },
+      "AddBoardRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Board's title",
+            "example": "Board01"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Board's icon",
+            "enum": [
+              "icon-project",
+              "icon-star",
+              "icon-loading",
+              "icon-puzzle",
+              "icon-container",
+              "icon-lightning",
+              "icon-colors",
+              "icon-hexagon"
+            ],
+            "example": "icon-project"
+          },
+          "background": {
+            "type": "string",
+            "description": "Board's background",
+            "enum": [
+              "00",
+              "01",
+              "02",
+              "03",
+              "04",
+              "05",
+              "06",
+              "07",
+              "08",
+              "09",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15"
+            ],
+            "example": "00"
+          }
+        }
+      },
+      "AddBoardResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board's ID",
+            "example": "64cc1ecaa11d08d1a3498322"
+          },
+          "title": {
+            "type": "string",
+            "description": "Board's title",
+            "example": "Board01"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Board's icon",
+            "example": "icon-star"
+          },
+          "background": {
+            "type": "string",
+            "description": "Board's background",
+            "example": "00"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Board's last update date",
+            "example": "2023-08-03T21:40:26.681Z"
+          },
+          "columns": {
+            "type": "array",
+            "description": "Empty array of board`s columns",
+            "example": []
+          }
+        },
+        "example": {
+          "_id": "64c772d4906c009cfba4f8a9",
+          "title": "Board01",
+          "icon": "icon-star",
+          "background": "10",
+          "updatedAt": "2023-08-03T11:32:36.216Z",
+          "columns": []
+        }
+      },
+      "AddResponse400": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Bad request (missing required title field)",
+            "example": "missing required \"field_name\" field"
+          }
+        },
+        "example": {
+          "message": "missing required \"field_name\" field"
+        }
+      },
+      "AddBoardResponse409": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Conflict (board with stated title is already exist)",
+            "example": "Board Board01 already exist"
+          }
+        },
+        "example": {
+          "message": "Board Board01 already exist"
+        }
+      },
+      "EditBoardRequest": {
+        "type": "object",
+        "required": ["title", "icon", "background"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Board's title",
+            "example": "Board02"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Board's icon",
+            "enum": [
+              "icon-project",
+              "icon-star",
+              "icon-loading",
+              "icon-puzzle",
+              "icon-container",
+              "icon-lightning",
+              "icon-colors",
+              "icon-hexagon"
+            ],
+            "example": "icon-project"
+          },
+          "background": {
+            "type": "string",
+            "description": "Board's background",
+            "enum": [
+              "00",
+              "01",
+              "02",
+              "03",
+              "04",
+              "05",
+              "06",
+              "07",
+              "08",
+              "09",
+              "10",
+              "11",
+              "12",
+              "13",
+              "14",
+              "15"
+            ],
+            "example": "00"
+          }
+        }
+      },
+      "EditBoardResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board's ID",
+            "example": "64cc1ecaa11d08d1a3498322"
+          },
+          "title": {
+            "type": "string",
+            "description": "Board's title",
+            "example": "Board02"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Board's icon",
+            "example": "icon-project"
+          },
+          "background": {
+            "type": "string",
+            "description": "Board's background",
+            "example": "00"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Board's last update date",
+            "example": "2023-08-03T21:40:26.681Z"
+          }
+        },
+        "example": {
+          "_id": "64c772d4906c009cfba4f8a9",
+          "title": "Board02",
+          "icon": "icon-project",
+          "background": "10",
+          "updatedAt": "2023-08-03T11:32:36.216Z"
+        }
+      },
+      "DeleteBoardResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board's ID",
+            "example": "64cc1ecaa11d08d1a3498322"
+          },
+          "message": {
+            "type": "string",
+            "description": "Successful operation's message",
+            "example": "Board deleted"
+          }
+        }
+      },
+      "NewColumnRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Project name",
+            "example": "TaskPro Project"
+          },
+          "columnOwner": {
+            "type": "string",
+            "description": "Board id",
+            "example": "64cb8603ccecc89b385e073f"
+          },
+          "orderColumn": {
+            "type": "string",
+            "description": "Number",
+            "example": "5"
+          }
+        }
+      },
+      "NewColumnResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http",
+            "description": "Code",
+            "example": "200"
+          },
+          "result": {
+            "type": "string",
+            "description": "new column",
+            "example": "{}"
+          }
+        }
+      },
+      "UpdateColumnRequest": {
+        "type": "object",
+        "properties": {
+          "columnsId": {
+            "type": "string",
+            "description": "Columns Id",
+            "example": "5b41g5b68n4y8ny"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User Id",
+            "example": "64cb8603ccecc89b385e073f"
+          },
+          "boardId": {
+            "type": "string",
+            "description": "Board id",
+            "example": "5uy16l8o1i5"
+          }
+        }
+      },
+      "UpdateColumnResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http",
+            "description": "Code",
+            "example": "200"
+          },
+          "result": {
+            "type": "string",
+            "description": "new column",
+            "example": "{}"
+          }
+        }
+      },
+      "DeleteColumnRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User id",
+            "example": "64cb8603ccecc89b385e073f"
+          },
+          "columnId": {
+            "type": "string",
+            "description": "Column id",
+            "example": "64cb860gbtyythytr385e073f"
+          }
+        }
+      },
+      "DeletedColumnResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http",
+            "description": "Code",
+            "example": "200"
+          },
+          "message": {
+            "type": "string",
+            "description": "Response message",
+            "example": "Column deleted"
+          }
+        }
+      },
+      "AddTaskRequest": {
+        "type": "object",
+        "properties": {
+          "columnId": {
+            "type": "string",
+            "description": "Column id",
+            "example": "64cb860gbtyythytr385e073f"
+          }
+        }
+      },
+      "AddTaskResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http",
+            "description": "Code",
+            "example": "201"
+          },
+          "description": {
+            "type": "string",
+            "description": "Response message",
+            "example": "Success"
+          },
+          "priority": "High",
+          "deadline": {
+            "type":"string",
+            "example": "2024-03-09T17:31:42.620Z"
+          },
+          "updatedAt": {
+            "type":"string",
+            "example": "2024-03-09T17:31:42.625Z"
+          },
+          "task": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Task Name",
+                "example": "Create a "
+              },
+              "message": {
+                "type": "string",
+                "description": "Response message",
+                "example": "Success"
+              },
+              "column": {
+                "type": "string",
+                "description": "Column ids",
+                "example": "64cb8603ccecc89b385e073f"
+              },
+              "taskId": {
+                "type": "string",
+                "description": "Task Id",
+                "example": "64cb8603cceccfgtryjtyherf"
+              }
+            }
+          }
+        }
+      },
+      "DeleteTaskRequest": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "description": "Task id",
+            "example": "64cb860gbtyyttr385e073f"
+          }
+        }
+      },
+      "DeleteTaskResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "http",
+            "description": "Code",
+            "example": "200"
+          },
+          "message": {
+            "type": "string",
+            "description": "Task deleted",
+            "example": "Task deleted"
+          }
+        }
+      },
+      "PatchTaskRequest": {
+        "type": "object",
+        "required": ["title", "description", "priority", "deadline"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Tasks's title",
+            "example": "Tasks02"
+          },
+          "description": {
+            "type": "string",
+            "description": "Tasks's description",
+            "example": "Tasks02 description"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Tasks's priority",
+            "enum": ["Without", "Low", "Medium", "High"],
+            "example": "Medium"
+          },
+          "deadline": {
+            "type": "string",
+            "description": "Tasks's deadline",
+            "example": "2023-08-03T21:40:26.681Z"
+          }
+        }
+      },
+      "PatchTaskResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Tasks's ID",
+            "example": "64cb9cb06d0b074081d5fa91"
+          },
+          "title": {
+            "type": "string",
+            "description": "Tasks's title",
+            "example": "Tasks02"
+          },
+          "description": {
+            "type": "string",
+            "description": "Tasks's description",
+            "example": "Tasks02 description"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Tasks's priority",
+            "example": "Medium"
+          },
+          "deadline": {
+            "type": "string",
+            "description": "Tasks's deadline",
+            "example": "2023-08-03T21:40:26.681Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Tasks's last update date",
+            "example": "2023-08-03T21:40:26.681Z"
+            
+          },
+          "columnId": {
+            "type": "string",
+            "description": "Id Column",
+            "example": "65ec7e5ad7cb029b8491f23e"
+          }
+        },
+        "example": {
+          "_id": "64c8e005a6e42b970c671aa7",
+          "title": "Task02",
+          "description": "Task02 description",
+          "priority": "Medium",
+          "deadline": "2023-08-01T10:35:49.188Z",
+          "updatedAt": "2023-08-01T10:35:49.195Z",
+          "columnId": "65ec7e5ad7cb029b8491f23e"
+        }
+      },
+      "ReplaceTaskRequest": {
+        "type": "object",
+        "required": ["column"],
+        "properties": {
+          "column": {
+            "type": "string",
+            "description": "Column's ID to replace in",
+            "example": "64c772d4906c009cfba4f8a9"
+          }
+        }
+      },
+      "ReplaceTaskResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Successful operation's message",
+            "example": "Task replaced"
+          }
+        },
+        "example": {
+          "message": "Task replaced"
+        }
+      },
+      "GetPatchDeleteResponse400": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Bad request (invalid board`s ID)",
+            "example": "64c772d4906c009fba4f8a9 is not valid ID"
+          }
+        },
+        "example": {
+          "message": "64c772d4906c009fba4f8a9 is not valid ID"
+        }
+      },
+      "Response401": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Unauthorized",
+            "example": "Not authorized"
+          }
+        },
+        "example": {
+          "message": "Not authorized"
+        }
+      },
+      "Response404": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "The requested resource could not be found",
+            "example": "Not Found"
+          }
+        },
+        "example": {
+          "message": "Not Found"
+        }
+      },
+      "ReplaceTaskResponse500": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Internal Server Error (invalid column's ID)",
+            "example": "Cast to ObjectId failed for value \"64c92c1979888f7897f38c0\" (type string) at path \"column\""
+          }
+        },
+        "example": {
+          "message": "Cast to ObjectId failed for value \"64c92c1979888f7897f38c0\" (type string) at path \"column\""
+        }
+      },
+      "RegistrationResponse409": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Conflict (user with stated email is already exist)",
+            "example": "Email in use"
+          }
+        },
+        "example": {
+          "message": "Email in use"
+        }
+      },
+      "LoginResponse400": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Bad request (missing required field)",
+            "example": "You must enter an email"
+          }
+        },
+        "example": {
+          "message": "You must enter an email"
+        }
+      },
+      "LoginResponse401": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Unauthorized ( login information is wrong)",
+            "example": "Email or password is wrong"
+          }
+        },
+        "example": {
+          "message": "Email or password is wrong"
+        }
+      },
+      "ResponseLogout204": {
+        "type": "object",
+        "properties": {
+        }
+      },
+      "UpdateThemeResponse": {
+        "type": "object",
+        "properties": {
+          "type": "object",
+          "properties": {
+            "theme": {
+              "type": "string",
+              "description": "App theme",
+              "example": "light"
+            },
+            "message": {
+              "type": "string",
+              "description": "Succesfull operapion's message",
+              "example": "The theme has been changed"
+            }
+          }
+        },
+        "example": {
+          "theme": "light",
+          "avatarURL": "The theme has been changed"
+        }
+      },
+      "AddColumnResponse500": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Internal Server Error (invalid board's ID)",
+            "example": "Cast to ObjectId failed for value \"64c772d4906c09cfba4f8a9\" (type string) at path \"_id\" for model \"board\""
+          }
+        },
+        "example": {
+          "message": "Cast to ObjectId failed for value \"64c772d4906c09cfba4f8a9\" (type string) at path \"_id\" for model \"board\""
+        }
+      },
+      "AddColumnResponse409": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Conflict (column with stated title is already exist)",
+            "example": "Column Column01 already exist"
+          }
+        },
+        "example": {
+          "message": "Column Column01 already exist"
+        }
+      },
+      "DeleteColumnResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Column's ID",
+            "example": "64cc1ecaa11d08d1a3498322"
+          },
+          "message": {
+            "type": "string",
+            "description": "Successful operation's message",
+            "example": "Column deleted"
+          }
+        },
+        "example": {
+          "_id": "64c8e005a6e42b970c671aa7",
+          "message": "Column deleted"
+        }
+      }
+    },
+    
+
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
